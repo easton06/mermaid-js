@@ -1,0 +1,43 @@
+---
+config:
+  theme: forest
+  look: handDrawn
+  layout: dagre
+---
+flowchart TD
+    A["HEMS Project Implementation"] --> A1["1.0 Project Planning & Coordination"] & A2["2.0 System Design & Research"] & A3["3.0 Procurement & Hardware Preparation"] & A4["4.0 Hardware & Network Setup"] & A5["5.0 Software Dev & Cloud Config"] & A6["6.0 System Integration & Testing"] & A7["7.0 Deployment & Real-World Operation"] & A8["8.0 Data Analysis & App Dev"] & A9["9.0 Documentation & Reporting"] & A10["10.0 Project Closeout"]
+    A1 --> A1a["Define Project Scope"]
+    A1a --> A1b["Identify Stakeholders"]
+    A1b --> A1c["Set Project Goals"]
+    A1c --> A1d["Develop Project Charter"]
+    A1d --> A1e["Kickoff Meeting"]
+    A2 --> A2a["Research Energy Mgmt Requirements"]
+    A2a --> A2b["Design Four-Layer Architecture"]
+    A2b --> A2c["Select Components"]
+    A3 --> A3a["Acquire Components"]
+    A3a --> A3b["Modify Smart Plugs"]
+    A3b --> A3c["Install Smart Meter & CT Sensors"]
+    A4 --> A4a["Configure Raspberry Pi"]
+    A4a --> A4b["Configure Smart Plugs & Network"]
+    A5 --> A5a["Develop Local Scripts"]
+    A5a --> A5b["Configure MQTT Broker"]
+    A5b --> A5c["Setup AWS IoT & Cloud Services"]
+    A5c --> A5d["Develop Visual Dashboards & Alerts"]
+    A1d ~~~ A6
+    A6 --> A6a["Identify Interdependencies"]
+    A6a --> A6b["Integration Testing"]
+    A6b --> A6c["Troubleshooting & Refinement"]
+    A6c --> A6d["Validate Functionality"]
+    A2c ~~~ A7
+    A7 --> A7a["Deploy in Real House"]
+    A7a --> A7b["Operate Over One Year"]
+    A3c ~~~ A8
+    A8 --> A8a["Analyze Energy Data"]
+    A8a --> A8b["Develop User Applications"]
+    A4b ~~~ A9
+    A9 --> A9a["Prepare Documentation"]
+    A9a --> A9b["Publish Dataset & Code"]
+    A9b --> A9c["Submit Final Paper"]
+    A5d ~~~ A10
+    A10 --> A10a["Review Deliverables"]
+    A10a --> A10b["Document Lessons Learned"]

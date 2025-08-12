@@ -1,0 +1,26 @@
+---
+config:
+  theme: neo
+---
+classDiagram
+  direction LR
+  class WoodTable {
+    +INT ID
+    +INT Length
+    +INT Weight
+    +INT LocationID (FK)
+    +INT WoodTypeID (FK)
+  }
+  class LocationTable {
+    +INT ID
+    +VARCHAR Name
+    +DECIMAL WoodLengthThreshold
+  }
+  class WoodTypeTable {
+    +INT ID
+    +VARCHAR Name
+    +TEXT Description
+    +DECIMAL PriceRMPerLengthMM
+  }
+  LocationTable --o WoodTable : contains_wood_pieces
+  WoodTypeTable --o WoodTable : is_of_type

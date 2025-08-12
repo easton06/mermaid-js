@@ -1,0 +1,75 @@
+---
+config:
+  layout: dagre
+  theme: neo
+---
+flowchart TD
+ subgraph UserInteraction["<div style="font-size:1.5em; width:55rem; height:1.5em; display:flex; justify-content: flex-start; align-items:flex-end;">User Interaction &amp; Initial Data Capture</div>"]
+        B{"Choose Action: <br>Scan Existing OR Process New"}
+
+    subgraph Existing
+      style Existing fill:transparent,stroke:transparent
+        C["User Scans Existing Barcode <br>on Wood Block (using Svelte Barcode Scanner Page)"]
+        D["Svelte Barcode Scanner Page"]
+        E("Backend Process <br>Retrieve Initial Length <br>from DB")
+        F{"Initial Wood Length <br>Retrieved?"}
+        G["Error: Invalid Barcode / ID Not Found"]
+        H["Display Initial Length on Svelte Page"]
+        I["User Cuts Wood and take Leftover Wood"]
+    end
+  end
+ subgraph PhysicalProcess["<div style="font-size:1.5em; width:50rem; height:3em; display:flex; justify-content: flex-start; align-items:flex-end;">Physical Process &amp;<br> Sensor Measurement</div>"]
+        J["User Places Wood <br>on Physical Station"]
+        K("SR04P Distance Sensor <br>Measures Length")
+        L("1kg Load Cell <br>Measures Weight")
+        M("ESP32 <br>Read Sensors")
+        N["Calculated Length <br>&amp; Weight Data"]
+  end
+ subgraph DataProcessing["<div style="font-size:1.5em; width:40rem; height:3em; display:flex; justify-content: flex-start; align-items:flex-end;">Data Processing &amp;<br> Inventory Update</div>"]
+        O("Raspberry Pi <br>MQTT Broker")
+        P["Node-RED Logic: <br>1. Receive Sensor Data &amp; <br>   Initial ID Context (from Svelte) <br>2. Decide: New vs. Leftover Wood <br>3. Generate New/Update Old IDs <br>4. Auto-Assign Location <br>   (based on User Settings from DB) <br>5. Prepare Data for DB)"]
+        R("Supabase <br>PostgreSQL Database")
+  end
+ subgraph ActuationFeedback["<div style="font-size: 1.5em; width:20rem;">Actuation &amp; Feedback</div>"]
+        S("ESP32 Event Handler")
+        T("QR203 Thermal Printer")
+        U["Barcode Label Printed"]
+        V["User Manually Attaches <br>Label to Wood"]
+        W("LCD Screen")
+        X["User Views Length and Location on LCD"]
+        X1["User store wood in given Location"]
+  end
+ subgraph InventoryVisibility["<div style="font-size:1.5em; width:70rem; height:1.5em; display:flex; justify-content: flex-end; align-items:flex-end;">Inventory Visibility &amp; Traceability</div>"]
+        AA["Svelte Cloud Dashboard"]
+        BB["Inventory Data <br>with Location"]
+        UserConfig("User Configures <br>Location Rules <br>via Svelte Dashboard")
+  end
+    A(["Start: User wants to process wood"]) --> B
+    B -- Option: Scan Existing --> C
+    C -- Barcode/ID --> D
+    D -- Send ID --> E
+    E --> F
+    F -- No --> G
+    F -- Yes --> H
+    B -- Option: Process New --> J
+    H --> I
+    I --> J
+    J -- Physical Contact --> K & L
+    K --> M
+    L --> M
+    M -- Convert & Process --> N
+    N -- Send Sensor Data &amp; <br>Initial ID Context --> O
+    O -- Subscribe --> P
+    P -- "Updated Inventory Data <br>+ Auto-Assigned Location" --> R
+    UserConfig -- Stores Rules In --> R
+    P -- Send Data for Actuators --> S
+    S -- Print Commands --> T
+    T --> U
+    U --> V
+    V ~~~ AA
+    S -- Send Info --> W
+    W --> X --> X1
+    R -- "Real-time Sync / Query" --> AA
+    AA -- Displays --> BB
+    AA --> UserConfig
+    BB --> Z(["End: Wood Labeled, <br>Tracked, &amp; Auto-Located"])

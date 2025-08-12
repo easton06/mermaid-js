@@ -1,0 +1,76 @@
+---
+config:
+  themeVariables:
+    fontSize: 20px
+  theme: neo
+---
+flowchart LR
+  subgraph SensorsGroup["<div style=gap:20px;width:10em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/16962/16962738.png width=40 height=40/>Sensors</div>"]
+    ultrasonic["Distance Sensor"]
+    hx711["Weight Sensor"]
+  end
+  subgraph ESP32Group["<div style=gap:20px;width:8em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/5761/5761031.png width=40 height=40/>ESP32</div>"]
+    esp32_gpio1(["GPIO1"])
+    esp32_gpio2(["GPIO2"])
+    esp32_mqtt_client(["MQTT Client"])
+    esp32_i2c(["I²C"])
+    esp32_rxtx(["RX0 TX0"])
+  end
+  subgraph padding2[" "]
+    i2c_lcd["I²C LCD Screen"]
+    printer["Barcode Printer"]
+  end
+  subgraph ActuatorGroup["<div style=gap:20px;width:10em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/17067/17067290.png width=40 height=40/>Actuator</div>"]
+    padding2
+  end
+  subgraph StationDevice["<div style=width:20em;>Station Device (IoT Node)</div>"]
+    direction TB
+    SensorsGroup
+    ESP32Group
+    ActuatorGroup
+  end
+  subgraph padding3[" "]
+    local_mqtt_broker(["NodeRED/ Mosquitto <br>MQTT Broker"])
+    logic_processor(["NodeRED Logic Processor"])
+    end
+  subgraph RaspberryPiGroup["<div style=gap:20px;width:10em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/5969/5969241.png width=40 height=40/>Raspberry Pi</div>"]
+    padding3
+  end
+  subgraph padding5[" "]
+    nodejs_mqtt_client(["MQTT Client"])
+    http_server(["HTTP Server"])
+    nodejs_sql_client(["PostgreSQL Client"])
+  end
+  subgraph SvelteAppGroup["<div style=gap:20px;width:15em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/16511/16511275.png width=40 height=40/>Svelte-Powered Vercel App (Cloud Dashboard)</div>"]
+    padding5
+    end
+  subgraph padding6[" "]
+    mariadb[("PostgreSQL")]
+    end
+  subgraph SupabaseGroup["<div style=gap:20px;width:15em;display:flex;align-items:center;><img src=https://cdn-icons-png.flaticon.com/128/1602/1602360.png width=40 height=40/>Supabase PostgreSQL<br> Hosting Service</div>"]
+    padding6
+    end
+  subgraph WebHostedGroup["<div style=width:15em;>Web Hosted</div>"]
+    direction TB
+      SvelteAppGroup
+      SupabaseGroup
+    end
+    ultrasonic --> esp32_gpio1
+    hx711 --> esp32_gpio2
+    esp32_i2c <--> i2c_lcd
+    esp32_rxtx <--> printer
+    esp32_mqtt_client <-- MQTT Connection through local network --> local_mqtt_broker
+    local_mqtt_broker <-- MQTT Connection through Ngrok port forwarding --> nodejs_mqtt_client
+    mariadb <--> nodejs_sql_client
+    i2c_lcd -- Visual Output --> user["User"]
+    printer -- Physical Output --> user
+    http_server -- Dashboard through Web Access --> user
+    ultrasonic@{ shape: manual-input}
+    hx711@{ shape: manual-input}
+    i2c_lcd@{ shape: display}
+    printer@{ shape: display}
+    user@{ img: "https://cdn-icons-png.flaticon.com/128/1177/1177568.png", h: 200, w: 200, pos: "b"}
+    style padding2 fill:none,stroke:none
+    style padding3 fill:none,stroke:none
+    style padding5 fill:none,stroke:none
+    style padding6 fill:none,stroke:none
